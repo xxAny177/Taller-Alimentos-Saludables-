@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // === INICIO DEL FIX: Mover los puntos de navegación al contenedor del carrusel ===
-    // Esto corrige el error de posicionamiento absoluto sin modificar el HTML.
+    // === FIX: Mover los puntos de navegación al contenedor del carrusel para correcto posicionamiento ===
     const carouselContainer = document.querySelector('.carousel-container');
     const dotsContainer = document.querySelector('.carousel-dots');
 
@@ -9,140 +8,123 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // === FIN DEL FIX ===
 
-    // --- Lógica original para el Acordeón (Cronograma) ---
+    // ---------------------------------------------
+    // --- Lógica del Acordeón (Cronograma) ---
+    // ---------------------------------------------
     const dias = document.querySelectorAll('.cronograma-dia h4');
 
     dias.forEach(header => {
+        // Inicializar la flecha hacia abajo si no existe
+        if (!header.textContent.includes('▾') && !header.textContent.includes('▴')) {
+            header.textContent += ' ▾';
+        }
+        
         header.addEventListener('click', function() {
             const parent = this.parentElement;
             const isActive = parent.classList.contains('active');
 
+            // 1. Cierra todos los acordeones
             document.querySelectorAll('.cronograma-dia').forEach(item => {
                 item.classList.remove('active');
-                item.querySelector('h4').textContent = item.querySelector('h4').textContent.replace('▴', '▾');
+                // Reemplaza la flecha '▴' por '▾' en todos los que la tienen
+                let headerText = item.querySelector('h4').textContent;
+                item.querySelector('h4').textContent = headerText.replace('▴', '▾');
             });
 
+            // 2. Abre el acordeón clicado si no estaba activo
             if (!isActive) {
                 parent.classList.add('active');
+                // Reemplaza la flecha '▾' por '▴' en el acordeón actual
                 this.textContent = this.textContent.replace('▾', '▴');
             }
         });
     });
-
-    // --- LÓGICA PARA RESALTAR LA SECCIÓN ACTIVA (SCROLLSPY) ---
     
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    // Obtener todas las secciones (incluyendo la nueva y la galería)
-    const sections = Array.from(navLinks).map(link => {
-        const id = link.getAttribute('href');
-        return document.querySelector(id);
-    }).filter(section => section !== null); 
-
-    function updateActiveSection() {
-        const offset = 100; 
-        let currentSection = null;
-        
-        for (let i = sections.length - 1; i >= 0; i--) {
-            const section = sections[i];
-            
-            if (window.scrollY >= section.offsetTop - offset) {
-                currentSection = section;
-                break;
-            }
-        }
-        
-        sections.forEach(section => {
-            section.classList.remove('active');
-        });
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-        });
-        
-        if (currentSection) {
-            currentSection.classList.add('active');
-            const activeLink = document.querySelector(`.nav-link[href="#${currentSection.id}"]`);
-            if (activeLink) {
-                activeLink.classList.add('active');
-            }
-        }
-    }
-    
-    // --- LÓGICA COMPLETA DEL CARRUSEL (SLIDER) ---
+    // ---------------------------------------------
+    // --- LÓGICA DEL CARRUSEL (SLIDER) ---
+    // ---------------------------------------------
     const track = document.querySelector('.carousel-track');
-    const slides = Array.from(document.querySelectorAll('.carousel-slide'));
-    const nextButton = document.querySelector('.carousel-btn.next');
-    const prevButton = document.querySelector('.carousel-btn.prev');
-    // Ya no se usa querySelector('.carousel-dots') aquí, usamos la variable de arriba
-    const slideCount = slides.length;
-    let slideIndex = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const prevButton = document.querySelector('.prev');
+    const nextButton = document.querySelector('.next');
     
-    // 1. Generar los puntos de navegación 
-    if (dotsContainer) {
-        const dots = [];
-        for (let i = 0; i < slideCount; i++) {
+    if (track && slides.length > 0) {
+        let slideIndex = 0;
+        let autoPlayInterval;
+
+        // 1. Crear Puntos de Navegación (Dots)
+        for (let i = 0; i < slides.length; i++) {
             const dot = document.createElement('span');
             dot.classList.add('dot');
             dot.setAttribute('data-index', i);
             dotsContainer.appendChild(dot);
-            dots.push(dot);
             
-            dot.addEventListener('click', () => moveToSlide(i));
+            dot.addEventListener('click', () => {
+                moveToSlide(i);
+            });
         }
+        const dots = document.querySelectorAll('.dot');
 
-        // 2. Función principal de movimiento
+
+        // 2. Función principal para mover el carrusel
         function moveToSlide(index) {
+            // Asegura que el índice esté dentro del rango
             if (index < 0) {
-                index = slideCount - 1; 
-            } else if (index >= slideCount) {
-                index = 0; 
+                index = slides.length - 1;
+            } else if (index >= slides.length) {
+                index = 0;
             }
 
             slideIndex = index;
-            const offset = -slideIndex * 100;
-            if (track) {
-                track.style.transform = `translateX(${offset}%)`;
-            }
+            
+            // Mueve el track
+            const amountToMove = -slideIndex * 100;
+            track.style.transform = 'translateX(' + amountToMove + '%)';
 
-            // Actualizar puntos
+            // Actualiza los puntos de navegación
             dots.forEach(dot => dot.classList.remove('active'));
-            if (dots[slideIndex]) {
-                dots[slideIndex].classList.add('active');
-            }
+            dots[slideIndex].classList.add('active');
         }
-        
-        // 3. Handlers de botones
-        if (nextButton) nextButton.addEventListener('click', () => moveToSlide(slideIndex + 1));
-        if (prevButton) prevButton.addEventListener('click', () => moveToSlide(slideIndex - 1));
 
-        // 4. Autoplay
-        let autoPlayInterval = setInterval(() => {
+        // 3. Botones Anterior y Siguiente
+        prevButton.addEventListener('click', () => {
+            moveToSlide(slideIndex - 1);
+        });
+
+        nextButton.addEventListener('click', () => {
             moveToSlide(slideIndex + 1);
-        }, 5000); 
+        });
+
+        // 4. Autoplay (Cambia cada 5 segundos)
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(() => {
+                moveToSlide(slideIndex + 1);
+            }, 5000); 
+        }
 
         // Pausar Autoplay al interactuar
-        
         if (carouselContainer) {
             carouselContainer.addEventListener('mouseover', () => clearInterval(autoPlayInterval));
             carouselContainer.addEventListener('mouseleave', () => {
-                autoPlayInterval = setInterval(() => {
-                    moveToSlide(slideIndex + 1);
-                }, 5000);
+                startAutoPlay();
             });
         }
 
         // 5. Inicialización
         moveToSlide(0);
+        startAutoPlay();
     }
     // --- FIN DE LA LÓGICA DEL CARRUSEL ---
 
+    // ---------------------------------------------
     // --- LÓGICA PARA EL BOTÓN VOLVER AL INICIO (BACK TO TOP) ---
+    // ---------------------------------------------
     const backToTopButton = document.getElementById('back-to-top');
 
     if (backToTopButton) {
         // Mostrar/Ocultar el botón
         window.addEventListener('scroll', function() {
-            if (window.scrollY > 300) { 
+            if (window.scrollY > 300) { // Muestra el botón después de 300px de scroll
                 backToTopButton.style.display = 'block';
             } else {
                 backToTopButton.style.display = 'none';
@@ -160,9 +142,51 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- FIN LÓGICA BACK TO TOP ---
 
 
-    // Agregar un 'listener' para el evento scroll
-    window.addEventListener('scroll', updateActiveSection);
+    // ---------------------------------------------
+    // --- LÓGICA PARA RESALTAR LA SECCIÓN ACTIVA (SCROLLSPY) ---
+    // ---------------------------------------------
+    const navLinks = document.querySelectorAll('.nav-link');
     
-    // Ejecutar una vez al cargar
-    updateActiveSection();
+    // Obtener todas las secciones ancladas
+    const sections = Array.from(navLinks).map(link => {
+        const id = link.getAttribute('href');
+        return document.querySelector(id);
+    }).filter(section => section !== null); 
+
+    function updateActiveSection() {
+        const offset = 100; // Un margen para que se active antes de llegar al borde superior
+        let currentSection = null;
+        
+        // Recorre las secciones de abajo hacia arriba
+        for (let i = sections.length - 1; i >= 0; i--) {
+            const section = sections[i];
+            
+            // Si el scroll supera el inicio de la sección (menos el offset), esa es la actual
+            if (window.scrollY >= section.offsetTop - offset) {
+                currentSection = section;
+                break;
+            }
+        }
+        
+        // Remover 'active' de todas las secciones y enlaces
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // Asignar 'active' a la sección y enlace actual
+        if (currentSection) {
+            currentSection.classList.add('active');
+            const activeLink = document.querySelector(`.nav-link[href="#${currentSection.id}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+    }
+    
+    // Ejecutar el scrollspy al cargar y al hacer scroll
+    window.addEventListener('scroll', updateActiveSection);
+    updateActiveSection(); // Ejecutar al inicio para la primera sección
 });
