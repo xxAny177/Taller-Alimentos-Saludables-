@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // === INICIO DEL FIX: Mover los puntos de navegación al contenedor del carrusel ===
+    // Esto corrige el error de posicionamiento absoluto sin modificar el HTML.
+    const carouselContainer = document.querySelector('.carousel-container');
+    const dotsContainer = document.querySelector('.carousel-dots');
+
+    if (carouselContainer && dotsContainer && dotsContainer.parentElement !== carouselContainer) {
+        carouselContainer.appendChild(dotsContainer);
+    }
+    // === FIN DEL FIX ===
+
     // --- Lógica original para el Acordeón (Cronograma) ---
     const dias = document.querySelectorAll('.cronograma-dia h4');
 
@@ -63,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const slides = Array.from(document.querySelectorAll('.carousel-slide'));
     const nextButton = document.querySelector('.carousel-btn.next');
     const prevButton = document.querySelector('.carousel-btn.prev');
-    const dotsContainer = document.querySelector('.carousel-dots');
+    // Ya no se usa querySelector('.carousel-dots') aquí, usamos la variable de arriba
     const slideCount = slides.length;
     let slideIndex = 0;
     
@@ -111,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000); 
 
         // Pausar Autoplay al interactuar
-        const carouselContainer = document.querySelector('.carousel-container');
+        
         if (carouselContainer) {
             carouselContainer.addEventListener('mouseover', () => clearInterval(autoPlayInterval));
             carouselContainer.addEventListener('mouseleave', () => {
