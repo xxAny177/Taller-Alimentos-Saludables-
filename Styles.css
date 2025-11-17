@@ -218,28 +218,6 @@ footer {
     font-size: 0.9em;
 }
 
-/* Media Queries para Responsiveness */
-@media (max-width: 600px) {
-    header h1 {
-        font-size: 2em;
-    }
-    .card {
-        padding: 20px;
-    }
-    th, td {
-        padding: 8px 10px;
-        font-size: 0.9em;
-    }
-    /* Responsiveness de estadísticas */
-    .stats-container {
-        flex-direction: column;
-    }
-    .stat-item {
-        width: 100%;
-        margin-bottom: 20px;
-    }
-}
-
 /* --- ESTILOS AÑADIDOS PARA LA FUNCIONALIDAD Y DISEÑO MEJORADO --- */
 
 /* Hace el scroll suave al hacer clic en los enlaces internos */
@@ -260,13 +238,18 @@ html {
     z-index: 1000;
     background-color: var(--color-card-bg);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    /* Flexbox por defecto (para escritorio) */
+    display: flex;
+    flex-wrap: wrap; /* Permitir que los elementos se envuelvan */
+    justify-content: center;
 }
 
 .simple-nav .nav-link {
     text-decoration: none;
     color: var(--color-texto);
     font-weight: 600;
-    margin: 0 10px;
+    margin: 5px 10px; /* Ajuste el margen para móviles */
     padding: 5px 10px;
     transition: color 0.3s ease, background-color 0.3s ease;
     border-radius: 5px;
@@ -468,4 +451,66 @@ html {
 
 #back-to-top:hover {
     background-color: var(--color-principal);
+}
+
+
+/* Media Queries para Responsiveness */
+@media (max-width: 600px) {
+    /* Encabezado */
+    header h1 {
+        font-size: 2em;
+    }
+    header h2 { /* Reducir el subtítulo también */
+        font-size: 1em;
+    }
+
+    /* Navegación Fija */
+    .simple-nav {
+        /* Usar grid para una mejor disposición de los enlaces en filas */
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr); /* 3 columnas en móviles */
+        padding: 10px 5px;
+        margin: 0 auto 20px;
+    }
+    .simple-nav .nav-link {
+        font-size: 0.85em; /* Reducir tamaño de fuente de los enlaces */
+        margin: 5px 3px;
+    }
+    
+    /* Contenido General */
+    .card {
+        padding: 20px;
+    }
+    th, td {
+        padding: 8px 10px;
+        font-size: 0.9em;
+    }
+    
+    /* Estadísticas */
+    .stats-container {
+        flex-direction: column; /* Apilar en vertical */
+        gap: 15px;
+    }
+    .stat-item {
+        width: 100%;
+        flex-basis: auto; /* Anulación de la base de 30% */
+        margin-bottom: 0;
+    }
+    .stat-number {
+        font-size: 2em; /* Reducir un poco el número */
+    }
+
+    /* Carrusel */
+    .carousel-btn {
+        padding: 10px 12px; /* Reducir el tamaño de los botones */
+        font-size: 1.2em;
+    }
+    
+    /* Botón Volver Arriba */
+    #back-to-top {
+        padding: 10px;
+        font-size: 1.2em;
+        bottom: 10px;
+        right: 10px;
+    }
 }
