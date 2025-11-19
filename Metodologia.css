@@ -1,11 +1,11 @@
 /* Variables de color */
 :root {
-    --color-principal: #388e3c; /* Verde Oscuro */
-    --color-secundario: #77AD4E; /* Verde Medio */
-    --color-fondo: #D0F7AD; /* Verde Claro/Pastel */
+    --color-principal: #38568e; /* Verde Oscuro */
+    --color-secundario: #38568e; /* Verde Medio */
+    --color-fondo: #a4d3f3; /* Verde Claro/Pastel */
     --color-texto: #333;
     --color-card-bg: #fff;
-    --color-borde: #4FC453;
+    --color-borde: #a4d3f3;
 }
 
 /* Estilos Generales */
@@ -24,7 +24,7 @@ body {
 
 /* --- Encabezado --- */
 header {
-    background-image: url('https://www.revistamoi.com/wp-content/uploads/2018/03/12-healthy-food-Mrz.jpg'); 
+    background-image: url('https://mundobytes.com/wp-content/uploads/2025/01/programacion-sdk.jpg'); 
     background-size: cover; 
     background-position: center; 
     background-repeat: no-repeat; 
@@ -365,69 +365,6 @@ ul li {
     bottom: 0;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
-}
-
-/* --- Estilos para la Nueva Tabla de Cronograma --- */
-
-.table-responsive {
-    overflow-x: auto; /* Permite scroll horizontal en móviles */
-    margin-top: 20px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse; /* Bordes de las celdas juntos */
-    margin: 20px 0;
-    font-size: 0.9em;
-    text-align: left;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden; /* Asegura que los bordes redondeados se apliquen */
-}
-
-/* Encabezado de la tabla */
-thead tr {
-    background-color: var(--color-principal);
-    color: white;
-    text-transform: uppercase;
-    font-weight: 600;
-}
-
-th, td {
-    padding: 12px 15px;
-    border: 1px solid #ddd; /* Borde suave */
-}
-
-/* Filas normales */
-tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3; /* Rayas para facilitar la lectura */
-}
-
-tbody tr:hover {
-    background-color: var(--color-fondo); /* Resaltar fila al pasar el mouse */
-}
-
-/* Encabezado del día (fila que abarca las 4 columnas) */
-.day-header td {
-    background-color: var(--color-secundario);
-    color: white;
-    font-weight: 700;
-    text-align: center;
-    font-size: 1.1em;
-    padding: 10px;
-    border: none;
-    border-bottom: 2px solid var(--color-principal);
-    border-top: 2px solid var(--color-principal);
-}
-
-/* Ajuste en el tamaño de fuente para móviles */
-@media (max-width: 600px) {
-    table {
-        font-size: 0.8em;
-    }
-    th, td {
-        padding: 8px 10px;
-    }
 }
 
 /* --- Botón Volver Arriba (Back-to-Top) --- */
